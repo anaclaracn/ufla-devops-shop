@@ -27,3 +27,10 @@ O relatório reflete uma cultura **generativa (orientada a desempenho)**, confor
 Essa postura fica explicitamente demonstrada quando se diz que a ferramenta utilizada permitiu que muita capacidade fosse removida rápido demais, no seguinte trecho extraído do relatório oficial:
 
 > "While removal of capacity is a key operational practice, in this instance, the tool used allowed too much capacity to be removed too quickly. We have modified this tool to remove capacity more slowly and added safeguards to prevent capacity from being removed when it will take any subsystem below its minimum required capacity level."
+
+## 6. O que mais me surpreendeu no relatório
+O que mais me surpreendeu foi a **ironia do próprio painel de status ter ficado fora do ar**. O *Service Health Dashboard* — justamente a ferramenta que a AWS usa para comunicar incidentes aos clientes — rodava sobre o S3 e, por isso, ficou indisponível durante a crise (das 09:37 às 11:37 PST). Ou seja, o canal oficial de comunicação da própria nuvem dependia do serviço que acabara de cair, obrigando a AWS a recorrer ao Twitter e a banners para avisar os clientes.
+
+Esse detalhe me surpreendeu porque revela que até uma empresa com a maturidade operacional da AWS carregava um **ponto único de falha escondido** — uma dependência circular entre o serviço e o seu próprio mecanismo de status. Foi o ponto que mais me fez refletir: se nem a AWS garante que sua ferramenta de comunicação seja independente do serviço monitorado, imagine o risco silencioso de dependências não mapeadas em sistemas menores.
+
+Além disso, me impressionou a **desproporção entre causa e efeito**: um único parâmetro digitado errado em um comando derrubou, por cerca de 4 horas, uma das regiões mais importantes da nuvem, afetando S3, EC2, EBS e Lambda. A causa foi mínima (um erro de digitação) e o impacto, gigantesco.
