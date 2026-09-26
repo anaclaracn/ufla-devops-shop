@@ -1,0 +1,46 @@
+# VCS
+.git/
+.gitignore
+
+# Python local (nunca entra na imagem)
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+
+# Banco SQLite local e dados grandes
+*.db
+*.db-journal
+dados/
+
+# Segredos — NUNCA na imagem
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.yaml
+secrets.yml
+
+# Editores e sistema operacional
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Nao fazem parte da imagem (testes, scripts e docs da disciplina)
+tests/
+scripts/
+systemd/
+nginx/
+docs/
+alunos/
+analises/
+.github/
+
+# Arquivos soltos
+*.md
