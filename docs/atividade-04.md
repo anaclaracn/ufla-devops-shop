@@ -42,23 +42,41 @@ A métrica que a correção usa é o `{{.Size}}` do `docker image inspect` (a co
 
 Total: `DISK USAGE` de **280 MB → 140 MB** (metade), e `{{.Size}}` de **61 MB → 31 MB**.
 
-## 3. Saída dos comandos de verificação
+## 3. Saída dos comandos de verificação (Parte 2)
+
+Bloco completo que a correção executa, com as saídas reais:
 
 ```bash
-docker run --rm ufla-shop:1.0 id -u
-# 100  (diferente de 0 = não-root)
+# build
+docker build -t ufla-shop:1.0 .
+# => naming to docker.io/library/ufla-shop:1.0 done
 
-docker inspect --format '{{.State.Health.Status}}' loja
+# tamanho — meta < 150M (numfmt é do Linux; no macOS mostro os bytes direto)
+docker image inspect --format '{{.Size}}' ufla-shop:1.0
+# 31155914   (~31 MB, < 150M)
+
+# sobe a loja
+docker run -d --name loja -p 8000:8000 ufla-shop:1.0
+# 648f4405c98bef211d2e01fbce4b0380d593b8c0b893a126e01332fd1da464be
+
+# não-root (tem que ser != 0)
+docker run --rm ufla-shop:1.0 id -u
+# 100
+
+# health (tem que ser healthy)
+sleep 10 && docker inspect --format '{{.State.Health.Status}}' loja
 # healthy
 
+# a loja responde
 curl -s localhost:8000/health
 # {"status":"ok","versao":"1.0.0"}
 
 curl -s localhost:8000/api/produtos | head -c 200
 # [{"id":1,"nome":"Caneca DevOps na Prática","descricao":"Cerâmica, 350 ml: 'funciona na minha máquina'","preco":39.9,"estoque":25,...
 
+# para em menos de 2s (CMD na forma exec)
 time docker stop loja
-# docker stop loja  0.01s user 0.00s system 3% cpu 0.401 total   (< 2 s)
+# docker stop loja  0.01s user 0.00s system 3% cpu 0.401 total
 ```
 
 ## 4. Por que o `HEALTHCHECK` consulta `/health` e não `/ready`?
